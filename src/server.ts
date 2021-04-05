@@ -1,21 +1,36 @@
-import ws from 'ws';
+import socketio from 'socket.io';
 import dotenv from 'dotenv';
-import { ISocketMessage } from './models/socketmessage';
+import joinGameRoomEventHandler from './handlers/joinGameRoomEventHandler';
 
 dotenv.config();
 
 const port = parseInt(process.env.PORT) || 8080;
-const server = new ws.Server({ port }, () => {
-    console.log('Web socket server started');
-});
+const server = new socketio.Server();
 
-server.on('connection', (socket) => {
-    socket.on('message', (data: ISocketMessage) => {
-        console.log(`Data received from client: ${data}`);
-        socket.send(data);
+/*
+    Events:
+        *Misc events*
+        ping
+        join
+        leave
+        
+        *Player events*
+        tierup
+        recruitpokemon
+        sellpokemon
+        freezebench
+        reorderpokemon
+        playpokemon
+        attachenergy
+*/
+server.on('connection', socket => {
+    console.log(`Connection from socket '${socket.id}'`);
+
+    socket.on('disconnect', () => {
+        console.log(`Socket '${socket.id}' disconnected`);
     });
+
+    joinGameRoomEventHandler(socket);
 });
 
-server.on('listening', () => {
-    console.log(`Listening on port ${port}`);
-});
+server.listen(port);

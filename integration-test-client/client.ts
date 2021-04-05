@@ -1,31 +1,26 @@
-import ws from 'ws';
+import socketio from 'socket.io-client';
 import dotenv from 'dotenv';
+import JoinGameRoomEventMessage from './../src/models/joinGameRoomEventMessage';
 
 dotenv.config();
 
-const client = new ws(process.env.SERVER_SOCKET_ADDRESS);
+const client = socketio(process.env.INTEGRATION_TEST_SERVER_SOCKET_ADDRESS);
 
-client.on('message', (data) => {
-    console.log(`Data received from server: ${data}`);
+client.on('connect', () => {
+    console.log('connected to server');
+    
+    console.log('before emit');
+    const message: JoinGameRoomEventMessage = {
+        gameRoomId: "testGameRoomId2",
+        playerId: "testPlayerId",
+        playerUsername: "testPlayerUsername"
+    }
+    client.emit("joinGameRoom", message, (response: any) => {
+        console.log(response);
+    });
+    console.log('after emit');
 });
 
-/*let exitRequested = false;
-while(!exitRequested) {
-    let answer = input('Enter message event and data to send to server. Type\'ex\' for an example\n');
-
-    if (answer === 'ex') {
-        console.log('Format: [event] [data]\n\nExample: message test data');
-    } else {
-        const trimmed = answer.trim();
-        const event = trimmed.substr(0, trimmed.indexOf(' '));
-        const data = trimmed.substr(trimmed.indexOf(' ') + 1, trimmed.length - (trimmed.indexOf(' ') + 1));
-
-        client.send({
-            event,
-            data
-        }, (err) => {
-            if (err)
-                console.log(`Error sending data to server: ${err}`);
-        });
-    }
-}*/
+client.on("disconnect", () => {
+    console.log('disconnected from server');
+});
