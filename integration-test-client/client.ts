@@ -24,3 +24,7 @@ client.on('connect', () => {
 client.on("disconnect", () => {
     console.log('disconnected from server');
 });
+
+client.on('gameStarted', () => {
+    console.log('Received gameStarted event');
+});

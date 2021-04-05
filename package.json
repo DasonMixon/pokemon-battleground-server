@@ -27,6 +27,7 @@
   "homepage": "https://github.com/DasonMixon/pokemon-battlegrounds-server#readme",
   "devDependencies": {
     "@types/jasmine": "^3.6.9",
+    "@types/lodash": "^4.14.168",
     "@types/node": "^14.14.37",
     "@types/socket.io": "^2.1.13",
     "@types/socket.io-client": "^1.4.36",
@@ -40,6 +41,7 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
+    "lodash": "^4.17.21",
     "socket.io": "^4.0.1",
     "socket.io-client": "^4.0.1",
     "uuid": "^8.3.2"

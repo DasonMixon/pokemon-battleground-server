@@ -2,6 +2,8 @@ import socketio from 'socket.io';
 import JoinGameRoomEventMessage from './../models/joinGameRoomEventMessage';
 import { gameRooms } from './../managers/gameRoom.manager';
 import { GameRoom } from './../models/gameroom';
+import { server } from './../managers/socketServer.manager';
+import GameStartedEventMessage from './../models/gameStartedEventMessage';
 
 const joinGameRoomEventHandler = (socket: socketio.Socket) => 
     socket.on('joinGameRoom', (data: JoinGameRoomEventMessage, callback: any) => {
@@ -30,7 +32,19 @@ const joinGameRoomEventHandler = (socket: socketio.Socket) =>
         };
         gameRoom.room.players.push(player);
 
+        // Let the player who just joined their player details
         callback(player);
+
+        // Add player to the socket room
+        socket.join(gameRoom.room.id);
+
+        // If all players have joined, emit an event letting everyone know the game is now starting
+        if (gameRoom.room.players.length === 8) {
+            const gameStarted: GameStartedEventMessage = {
+                gameRoomId: gameRoom.room.id
+            };
+            server.to(gameRoom.room.id).emit('gameStarted', gameStarted);
+        }
     });
 
 export default joinGameRoomEventHandler;
