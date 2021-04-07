@@ -1,6 +1,6 @@
 import socketio from 'socket.io';
 import JoinGameRoomEventMessage from './../models/joinGameRoomEventMessage';
-import { gameRooms } from './../managers/gameRoom.manager';
+import { gameRooms, socketGameRoomAssociations } from './../managers/gameRoom.manager';
 import { GameRoom } from './../models/gameroom';
 import { server } from './../managers/socketServer.manager';
 import GameStartedEventMessage from './../models/gameStartedEventMessage';
@@ -16,6 +16,12 @@ const joinGameRoomEventHandler = (socket: socketio.Socket) =>
             gameRooms.push(gameRoom);
         }
 
+        if (gameRoom.inProgress) {
+            // Don't let someone join if the game is in progress
+            callback('Unable to join game in progress');
+            return;
+        }
+
         const player = {
             id: data.playerId,
             username: data.playerUsername,
@@ -28,9 +34,15 @@ const joinGameRoomEventHandler = (socket: socketio.Socket) =>
             },
             store: {
                 availablePokemon: new Array()
-            }
+            },
+            socketId: socket.id,
+            maxHealth: 40,
+            currentHealth: 40,
+            knockedOut: false,
+            roundKnockedOut: 0
         };
         gameRoom.room.players.push(player);
+        socketGameRoomAssociations.push({ gameRoomId: gameRoom.room.id, socketId: socket.id });
 
         // Let the player who just joined their player details
         callback(player);
@@ -39,11 +51,13 @@ const joinGameRoomEventHandler = (socket: socketio.Socket) =>
         socket.join(gameRoom.room.id);
 
         // If all players have joined, emit an event letting everyone know the game is now starting
-        if (gameRoom.room.players.length === 8) {
+        if (gameRoom.room.players.length === 2) {
             const gameStarted: GameStartedEventMessage = {
                 gameRoomId: gameRoom.room.id
             };
             server.to(gameRoom.room.id).emit('gameStarted', gameStarted);
+
+            gameRoom.startGame();
         }
     });
 

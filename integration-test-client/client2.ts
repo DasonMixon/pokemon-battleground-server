@@ -1,11 +1,11 @@
 import socketio from 'socket.io-client';
 import dotenv from 'dotenv';
 import JoinGameRoomEventMessage from './../src/models/joinGameRoomEventMessage';
-import GameRoomPhaseEndedEventMessage from './../src/models/gameRoomPhaseEndedEventMessage';
-import GameRoomPlayerChangedEventMessage from './../src/models/gameRoomPlayerChangedEventMessage';
-import GameRoomBattlePhaseOutcomeEventMessage from './../src/models/gameRoomBattlePhaseOutcomeEventMessage';
 import GameRoomPhaseTimeLeftUpdatedEventMessage from './../src/models/gameRoomPhaseTimeLeftUpdatedEventMessage';
-import GameRoomEndedEventMessage from './../src/models/gameRoomEnded';
+import GameRoomPhaseEndedEventMessage from '../src/models/gameRoomPhaseEndedEventMessage';
+import GameRoomPlayerChangedEventMessage from '../src/models/gameRoomPlayerChangedEventMessage';
+import GameRoomBattlePhaseOutcomeEventMessage from '../src/models/gameRoomBattlePhaseOutcomeEventMessage';
+import GameRoomEndedEventMessage from '../src/models/gameRoomEnded';
 
 dotenv.config();
 
@@ -16,8 +16,8 @@ client.on('connect', () => {
     
     const message: JoinGameRoomEventMessage = {
         gameRoomId: "GameRoom1",
-        playerId: "Player2",
-        playerUsername: "Player2"
+        playerId: "Player1",
+        playerUsername: "Player1"
     }
     client.emit("joinGameRoom", message, (response: any) => {
         console.log(response);
