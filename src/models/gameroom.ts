@@ -32,6 +32,8 @@ class GameRoom {
         this.phaseTimeLeft = this.getPhaseTimeLeftStart();
         this.generatePlayerMatchups();
 
+
+
         // Start the game loop
         this.gameLoop = setInterval(() => {
             this.phaseTimeLeft -= 1;
@@ -88,6 +90,12 @@ class GameRoom {
 
             this.phaseTimeLeft = this.getPhaseTimeLeftStart();
         }, 1000);
+    }
+
+    private generateCardPool = () => {
+        const energyTypes = _.sampleSize(Object.values(EnergyType), 3);
+
+        
     }
 
     private getPhaseTimeLeftStart = (): number => {
@@ -394,6 +402,7 @@ interface IActivePokemon {
 }
 
 interface IAttack {
+    name: string;
     ordinalPosition: number;
     energyCost: Array<EnergyType>;
     damage: number;
@@ -404,6 +413,8 @@ interface IHand {
 }
 
 interface ICard {
+    imageId: string;
+    name: string;
     type: CardType;
     energyType: EnergyType;
     attachedEnergy: Array<ICard>;
@@ -425,9 +436,6 @@ enum EnergyType {
     Fighting = 'Fighting',
     Darkness = 'Darkness',
     Metal = 'Metal',
-    Fairy = 'Fairy',
-    Dragon = 'Dragon',
-    Colorless = 'Colorless'
 }
 
 enum Phase {
@@ -435,4 +443,4 @@ enum Phase {
     BattlePhase = 'BattlePhase'
 }
 
-export { GameRoom, Phase, IBattlePhaseResult }
+export { GameRoom, Phase, IBattlePhaseResult, IPlayer, ICard, CardType, EnergyType }
