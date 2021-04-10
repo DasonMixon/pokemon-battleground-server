@@ -1,4 +1,5 @@
-import { CardType, EnergyType, ICard } from './../models/gameroom';
+import { ICard } from './../models/gameroom';
+import { CardType, EnergyType } from './Enums';
 
 const grassEnergy: ICard = {
     imageId: 'TODO: Implement a system to provide image assets + their ids to clients',

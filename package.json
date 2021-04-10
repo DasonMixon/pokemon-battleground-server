@@ -10,6 +10,7 @@
   "scripts": {
     "start": "ts-node-dev src/server.ts",
     "start-integration-test-client": "ts-node-dev integration-test-client/client.ts",
+    "start-integration-test-client-2": "ts-node-dev integration-test-client/client2.ts",
     "build": "tsc",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",

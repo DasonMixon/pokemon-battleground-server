@@ -1,7 +1,7 @@
 import socketio from 'socket.io';
 import JoinGameRoomEventMessage from './../models/joinGameRoomEventMessage';
 import { gameRooms, socketGameRoomAssociations } from './../managers/gameRoom.manager';
-import { GameRoom } from './../models/gameroom';
+import { GameRoom, IPlayer } from './../models/gameroom';
 import { server } from './../managers/socketServer.manager';
 import GameStartedEventMessage from './../models/gameStartedEventMessage';
 
@@ -22,7 +22,7 @@ const joinGameRoomEventHandler = (socket: socketio.Socket) =>
             return;
         }
 
-        const player = {
+        const player: IPlayer = {
             id: data.playerId,
             username: data.playerUsername,
             board: {
@@ -39,7 +39,9 @@ const joinGameRoomEventHandler = (socket: socketio.Socket) =>
             maxHealth: 40,
             currentHealth: 40,
             knockedOut: false,
-            roundKnockedOut: 0
+            roundKnockedOut: 0,
+            currentTier: 1,
+            tierUpCost: 5 // 7, 8, 9, 11
         };
         gameRoom.room.players.push(player);
         socketGameRoomAssociations.push({ gameRoomId: gameRoom.room.id, socketId: socket.id });

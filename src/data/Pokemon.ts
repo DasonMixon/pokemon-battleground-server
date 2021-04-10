@@ -1,4 +1,5 @@
-import { CardType, EnergyType, ICard } from './../models/gameroom';
+import { ICard } from './../models/gameroom';
+import { CardType, EnergyType } from './Enums';
 
 const lightningPokemon: ICard[] = [
     {

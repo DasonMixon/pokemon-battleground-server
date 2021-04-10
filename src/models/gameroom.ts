@@ -6,6 +6,9 @@ import GameRoomPlayerChangedEventMessage from './gameRoomPlayerChangedEventMessa
 import GameRoomBattlePhaseOutcomeEventMessage from './gameRoomBattlePhaseOutcomeEventMessage';
 import GameRoomEndedEventMessage from './gameRoomEnded';
 import { getPokemonByEnergyType } from './../data/Pokemon';
+import GameRoomDataEventMessage from './gameRoomDataEventMessage';
+import { CardType, EnergyType, BattlePhaseEventType, Phase } from './../data/Enums';
+import availableEnergy from './../data/Energy';
 
 class GameRoom {
     room: IGameRoom;
@@ -13,8 +16,9 @@ class GameRoom {
     currentPhase: Phase;
     phaseTimeLeft: number;
     currentRound: number;
-    playerMatchups: Array<IBattlePhasePlayerMatchup>;
+    playerMatchups: IBattlePhasePlayerMatchup[];
     inProgress: boolean;
+    energyTypes: EnergyType[];
 
     constructor(id: string) {
         this.room = {
@@ -33,7 +37,16 @@ class GameRoom {
         this.phaseTimeLeft = this.getPhaseTimeLeftStart();
         this.generatePlayerMatchups();
         this.generateCardPool();
-        this.room.players.forEach(this.generateStoreForPlayer);
+        this.room.players.forEach(p => {
+            this.generateStoreForPlayer(p);
+
+            // Each player will start with 5 random energy cards
+            for (let i = 0; i < 5; i++) {
+                this.givePlayerRandomEnergyCard(p);
+            }
+        });
+
+        this.refreshRoomDataToPlayers();
 
         // Start the game loop
         this.gameLoop = setInterval(() => {
@@ -62,7 +75,7 @@ class GameRoom {
             // Let all clients know the game phase ended
             const phaseEnded: GameRoomPhaseEndedEventMessage = {
                 gameRoomId: this.room.id,
-                oldPhase: oldPhase,
+                oldPhase,
                 newPhase: this.currentPhase
             };
             server.to(this.room.id).emit('GameRoomPhaseEnded', phaseEnded);
@@ -84,24 +97,54 @@ class GameRoom {
                     server.to(this.room.id).emit('GameRoomEnded', msg);
                     clearInterval(this.gameLoop);
                 } else {
+                    this.room.players.forEach(p => {
+                        // Decrease the tier up cost for all players by 1
+                        if (p.tierUpCost > 0)
+                            p.tierUpCost -= 1;
+
+                        // Give each player 2 random energy cards after each round
+                        this.givePlayerRandomEnergyCard(p);
+                        this.givePlayerRandomEnergyCard(p);
+                    });
+
                     this.generatePlayerMatchups();
                     this.currentRound += 1;
                 }
             }
 
+            this.refreshRoomDataToPlayers();
+
             this.phaseTimeLeft = this.getPhaseTimeLeftStart();
         }, 1000);
     }
 
+    private refreshRoomDataToPlayers = () => {
+        this.room.players.forEach(p => {
+            const msg: GameRoomDataEventMessage = {
+                currentPhase: this.currentPhase,
+                currentRound: this.currentRound,
+                gameRoomId: this.room.id,
+                player: p,
+                playerMatchups: this.playerMatchups
+            };
+            server.to(p.socketId).emit('GameRoomData', msg);
+        });
+    }
+
     private generateCardPool = () => {
         this.room.cardPool = [];
-        const energyTypes = _.sampleSize(Object.values(EnergyType), 3);
-        energyTypes.forEach(et => {
+        this.energyTypes = _.sampleSize(Object.values(EnergyType).filter(e => e !== EnergyType.Colorless), 3);
+        this.energyTypes.forEach(et => {
             const pokemonOfEnergyType = getPokemonByEnergyType(et);
             pokemonOfEnergyType.forEach(p => {
-                this.room.cardPool.concat(this.getPokemonForTier(p));
+                this.room.cardPool = this.room.cardPool.concat(this.getPokemonForTier(p));
             });
         });
+    }
+
+    private givePlayerRandomEnergyCard = (player: IPlayer) => {
+        const randomEnergyCard = availableEnergy.find(e => e.energyType === _.sample(this.energyTypes));
+        player.hand.cards.push(randomEnergyCard);
     }
 
     private getPokemonForTier = (pokemon: ICard): ICard[] => {
@@ -128,7 +171,7 @@ class GameRoom {
         const currentStoreCards = player.store.availablePokemon;
         const newStoreCards = _.sampleSize(this.room.cardPool, this.getStoreCountForTier(player));
         newStoreCards.forEach(c => _.remove(this.room.cardPool, c));
-        this.room.cardPool.concat(currentStoreCards);
+        this.room.cardPool = this.room.cardPool.concat(currentStoreCards);
         player.store.availablePokemon = newStoreCards;
     }
 
@@ -153,7 +196,8 @@ class GameRoom {
 
     private getPhaseTimeLeftStart = (): number => {
         // For now just do something simle, this will need tweaked later
-        return 60 + (this.currentRound * 10);
+        //return 60 + (this.currentRound * 10);
+        return 10;
     }
 
     private generatePlayerMatchups = () => {
@@ -183,11 +227,11 @@ class GameRoom {
     }
 
     private simulateBattlePhase(player1: IPlayer, player2: IPlayer): IBattlePhaseResult {
-        let battlePhaseEvents: Array<IBattlePhaseEvent> = new Array();
+        const battlePhaseEvents: IBattlePhaseEvent[] = [];
 
         let currentPlayer: IPlayer = null;
         let firstPlayerToAttack: IPlayer;
-        
+
         const getOtherPlayer = (): IPlayer => {
             return currentPlayer.id === player1.id ? player2 : player1;
         }
@@ -301,7 +345,7 @@ class GameRoom {
             const pokemonWhoCanAttack = currentPlayer.board.activePokemon.filter(p => p.currentHealth > 0 && !p.hasAttacked);
             if (pokemonWhoCanAttack.length === 0)
                 continue;
-            
+
             const attackingPokemon = pokemonWhoCanAttack[0];
             const defendingPokemon = _.sample(getOtherPlayer().board.activePokemon.filter(p => p.currentHealth > 0));
             // See whether the attacking pokemon has correct energy for one of their attacks. If not they get "skipped", else
@@ -391,13 +435,13 @@ class GameRoom {
 }
 
 interface IBattlePhaseResult {
-    events: Array<IBattlePhaseEvent>;
+    events: IBattlePhaseEvent[];
     firstAttackingPlayer: string;
     winningPlayer: string;
 }
 
 interface IBattlePhasePlayerMatchup {
-    playerIds: Array<string>;
+    playerIds: string[];
 }
 
 interface IBattlePhaseEvent {
@@ -410,19 +454,10 @@ interface IBattlePhaseEvent {
     damageDealt: number;
 }
 
-enum BattlePhaseEventType {
-    CoinFlip = 'CoinFlip',
-    ActivePokemonAttack = 'ActivePokemonAttack',
-    ActivePokemonKnockedOut = 'ActivePokemonKnockedOut',
-    PlayerAttack = 'PlayerAttack',
-    PlayerKnockedOut = 'PlayerKnockedOut',
-    Draw = 'Draw'
-}
-
 interface IGameRoom {
     id: string;
-    players: Array<IPlayer>;
-    cardPool: Array<ICard>;
+    players: IPlayer[];
+    cardPool: ICard[];
 }
 
 interface IPlayer {
@@ -442,11 +477,11 @@ interface IPlayer {
 }
 
 interface IStoreBoard {
-    availablePokemon: Array<ICard>;
+    availablePokemon: ICard[];
 }
 
 interface IPlayerBoard {
-    activePokemon: Array<IActivePokemon>;
+    activePokemon: IActivePokemon[];
 }
 
 interface IActivePokemon {
@@ -459,12 +494,12 @@ interface IActivePokemon {
 interface IAttack {
     name: string;
     ordinalPosition: number;
-    energyCost: Array<EnergyType>;
+    energyCost: EnergyType[];
     damage: number;
 }
 
 interface IHand {
-    cards: Array<ICard>;
+    cards: ICard[];
 }
 
 interface ICard {
@@ -472,34 +507,10 @@ interface ICard {
     name: string;
     type: CardType;
     energyType: EnergyType;
-    attachedEnergy: Array<ICard>;
+    attachedEnergy: ICard[];
     maxHealth: number;
-    attacks: Array<IAttack>;
+    attacks: IAttack[];
     tier: number | null;
 }
 
-enum CardType {
-    Pokemon = 'Pokemon',
-    Energy = 'Energy'
-}
-
-enum EnergyType {
-    Grass = 'Grass',
-    Fire = 'Fire',
-    Water = 'Water',
-    Lightning = 'Lightning',
-    Psychic = 'Psychic',
-    Fighting = 'Fighting',
-    Darkness = 'Darkness',
-    Metal = 'Metal',
-
-    // We won't have a colorless energy card, but the type must exist for cards that have it
-    Colorless = 'Colorless'
-}
-
-enum Phase {
-    RecruitPhase = 'RecruitPhase',
-    BattlePhase = 'BattlePhase'
-}
-
-export { GameRoom, Phase, IBattlePhaseResult, IPlayer, ICard, CardType, EnergyType }
+export { GameRoom, IBattlePhaseResult, IPlayer, ICard, IBattlePhasePlayerMatchup }

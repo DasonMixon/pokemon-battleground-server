@@ -1,5 +1,6 @@
 import socketio from 'socket.io';
 import joinGameRoomEventHandler from './../handlers/joinGameRoomEventHandler';
+import pokemonBoughtEventHandler from './../handlers/pokemonBoughtEventHandler';
 import { gameRooms, socketGameRoomAssociations } from './gameRoom.manager';
 import _ from'lodash';
 
@@ -36,10 +37,12 @@ server.on('connection', socket => {
     });
 
     joinGameRoomEventHandler(socket);
+    pokemonBoughtEventHandler(socket);
 });
 
 const start = (port: number) => {
     server.listen(port);
+    console.log(`WS server started on port ${port}`);
 }
 
 export { start, server }

@@ -6,6 +6,7 @@ import GameRoomPhaseEndedEventMessage from '../src/models/gameRoomPhaseEndedEven
 import GameRoomPlayerChangedEventMessage from '../src/models/gameRoomPlayerChangedEventMessage';
 import GameRoomBattlePhaseOutcomeEventMessage from '../src/models/gameRoomBattlePhaseOutcomeEventMessage';
 import GameRoomEndedEventMessage from '../src/models/gameRoomEnded';
+import GameRoomDataEventMessage from '../src/models/gameRoomDataEventMessage';
 
 dotenv.config();
 
@@ -43,6 +44,11 @@ client.on("GameRoomBattlePhaseOutcome", (data: GameRoomBattlePhaseOutcomeEventMe
 
 client.on("GameRoomEnded", (data: GameRoomEndedEventMessage) => {
     console.log(`[GameRoomEnded] Player '${data.winningPlayerId}' won the game!`);
+});
+
+client.on("GameRoomData", (data: GameRoomDataEventMessage) => {
+    console.log('[GameRoomData] Got updated room data:');
+    console.log(data);
 });
 
 client.on("disconnect", () => {

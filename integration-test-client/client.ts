@@ -6,6 +6,9 @@ import GameRoomPlayerChangedEventMessage from './../src/models/gameRoomPlayerCha
 import GameRoomBattlePhaseOutcomeEventMessage from './../src/models/gameRoomBattlePhaseOutcomeEventMessage';
 import GameRoomPhaseTimeLeftUpdatedEventMessage from './../src/models/gameRoomPhaseTimeLeftUpdatedEventMessage';
 import GameRoomEndedEventMessage from './../src/models/gameRoomEnded';
+import GameRoomDataEventMessage from '../src/models/gameRoomDataEventMessage';
+import PokemonBoughtEventMessage from '../src/models/pokemonBoughtEventMessage';
+import { Phase } from '../src/data/Enums';
 
 dotenv.config();
 
@@ -30,6 +33,15 @@ client.on("GameRoomPhaseTimeLeftUpdated", (data: GameRoomPhaseTimeLeftUpdatedEve
 
 client.on("GameRoomPhaseEnded", (data: GameRoomPhaseEndedEventMessage) => {
     console.log(`[GameRoomPhaseEnded] Old phase: ${data.oldPhase} | New phase: ${data.newPhase}`);
+    if (data.newPhase === Phase.RecruitPhase) {
+        console.log('Senfing pokemonBought event');
+        const buyPokemon: PokemonBoughtEventMessage = {
+            gameRoomId: "GameRoom1",
+            playerId: "Player2",
+            pokemonStorePosition: 0
+        }
+        client.emit("pokemonBought", buyPokemon);
+    }
 });
 
 client.on("GameRoomPlayerChanged", (data: GameRoomPlayerChangedEventMessage) => {
@@ -43,6 +55,11 @@ client.on("GameRoomBattlePhaseOutcome", (data: GameRoomBattlePhaseOutcomeEventMe
 
 client.on("GameRoomEnded", (data: GameRoomEndedEventMessage) => {
     console.log(`[GameRoomEnded] Player '${data.winningPlayerId}' won the game!`);
+});
+
+client.on("GameRoomData", (data: GameRoomDataEventMessage) => {
+    console.log('[GameRoomData] Got updated room data:');
+    console.log(data);
 });
 
 client.on("disconnect", () => {
