@@ -7,7 +7,8 @@ const grassEnergy: ICard = {
     attacks: [],
     energyType: EnergyType.Grass,
     maxHealth: null,
-    type: CardType.Energy
+    type: CardType.Energy,
+    tier: null
 }
 
 const fireEnergy: ICard = {
@@ -17,7 +18,8 @@ const fireEnergy: ICard = {
     attacks: [],
     energyType: EnergyType.Fire,
     maxHealth: null,
-    type: CardType.Energy
+    type: CardType.Energy,
+    tier: null
 }
 
 const waterEnergy: ICard = {
@@ -27,7 +29,8 @@ const waterEnergy: ICard = {
     attacks: [],
     energyType: EnergyType.Water,
     maxHealth: null,
-    type: CardType.Energy
+    type: CardType.Energy,
+    tier: null
 }
 
 const lightningEnergy: ICard = {
@@ -37,7 +40,8 @@ const lightningEnergy: ICard = {
     attacks: [],
     energyType: EnergyType.Lightning,
     maxHealth: null,
-    type: CardType.Energy
+    type: CardType.Energy,
+    tier: null
 }
 
 const psychicEnergy: ICard = {
@@ -47,7 +51,8 @@ const psychicEnergy: ICard = {
     attacks: [],
     energyType: EnergyType.Psychic,
     maxHealth: null,
-    type: CardType.Energy
+    type: CardType.Energy,
+    tier: null
 }
 
 const fightingEnergy: ICard = {
@@ -57,7 +62,8 @@ const fightingEnergy: ICard = {
     attacks: [],
     energyType: EnergyType.Fighting,
     maxHealth: null,
-    type: CardType.Energy
+    type: CardType.Energy,
+    tier: null
 }
 
 const darknessEnergy: ICard = {
@@ -67,7 +73,8 @@ const darknessEnergy: ICard = {
     attacks: [],
     energyType: EnergyType.Darkness,
     maxHealth: null,
-    type: CardType.Energy
+    type: CardType.Energy,
+    tier: null
 }
 
 const metalEnergy: ICard = {
@@ -77,7 +84,8 @@ const metalEnergy: ICard = {
     attacks: [],
     energyType: EnergyType.Metal,
     maxHealth: null,
-    type: CardType.Energy
+    type: CardType.Energy,
+    tier: null
 }
 
 const availableEnergy: ICard[] = [

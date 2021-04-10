@@ -5,6 +5,7 @@ import _ from 'lodash';
 import GameRoomPlayerChangedEventMessage from './gameRoomPlayerChangedEventMessage';
 import GameRoomBattlePhaseOutcomeEventMessage from './gameRoomBattlePhaseOutcomeEventMessage';
 import GameRoomEndedEventMessage from './gameRoomEnded';
+import { getPokemonByEnergyType } from './../data/Pokemon';
 
 class GameRoom {
     room: IGameRoom;
@@ -31,8 +32,8 @@ class GameRoom {
         this.currentPhase = Phase.RecruitPhase;
         this.phaseTimeLeft = this.getPhaseTimeLeftStart();
         this.generatePlayerMatchups();
-
-
+        this.generateCardPool();
+        this.room.players.forEach(this.generateStoreForPlayer);
 
         // Start the game loop
         this.gameLoop = setInterval(() => {
@@ -93,9 +94,61 @@ class GameRoom {
     }
 
     private generateCardPool = () => {
+        this.room.cardPool = [];
         const energyTypes = _.sampleSize(Object.values(EnergyType), 3);
+        energyTypes.forEach(et => {
+            const pokemonOfEnergyType = getPokemonByEnergyType(et);
+            pokemonOfEnergyType.forEach(p => {
+                this.room.cardPool.concat(this.getPokemonForTier(p));
+            });
+        });
+    }
 
-        
+    private getPokemonForTier = (pokemon: ICard): ICard[] => {
+        switch(pokemon.tier) {
+            case 1:
+                return Array(18).fill(pokemon);
+            case 2:
+                return Array(15).fill(pokemon);
+            case 3:
+                return Array(13).fill(pokemon);
+            case 4:
+                return Array(11).fill(pokemon);
+            case 5:
+                return Array(9).fill(pokemon);
+            case 6:
+                return Array(6).fill(pokemon);
+            default:
+                return [];
+        }
+    }
+
+    private generateStoreForPlayer = (player: IPlayer) => {
+        // TODO: Make it so that the cardpool is locked while recycling and refreshing the player's store cards
+        const currentStoreCards = player.store.availablePokemon;
+        const newStoreCards = _.sampleSize(this.room.cardPool, this.getStoreCountForTier(player));
+        newStoreCards.forEach(c => _.remove(this.room.cardPool, c));
+        this.room.cardPool.concat(currentStoreCards);
+        player.store.availablePokemon = newStoreCards;
+    }
+
+    private getStoreCountForTier = (player: IPlayer): number => {
+        switch(player.currentTier) {
+            case 1:
+                return 3;
+            case 2:
+                return 4;
+            case 3:
+                return 4;
+            case 4:
+                return 5;
+            case 5:
+                return 5;
+            case 6:
+                return 6;
+            default:
+                return 0;
+        }
     }
 
     private getPhaseTimeLeftStart = (): number => {
@@ -384,6 +437,8 @@ interface IPlayer {
     knockedOut: boolean;
     roundKnockedOut: number;
     socketId: string;
+    currentTier: number;
+    tierUpCost: number;
 }
 
 interface IStoreBoard {
@@ -420,6 +475,7 @@ interface ICard {
     attachedEnergy: Array<ICard>;
     maxHealth: number;
     attacks: Array<IAttack>;
+    tier: number | null;
 }
 
 enum CardType {
@@ -436,6 +492,9 @@ enum EnergyType {
     Fighting = 'Fighting',
     Darkness = 'Darkness',
     Metal = 'Metal',
+
+    // We won't have a colorless energy card, but the type must exist for cards that have it
+    Colorless = 'Colorless'
 }
 
 enum Phase {
