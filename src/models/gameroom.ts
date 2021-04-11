@@ -171,7 +171,7 @@ class GameRoom {
         }
     }
 
-    private generateStoreForPlayer = (player: IPlayer) => {
+    public generateStoreForPlayer = (player: IPlayer) => {
         // TODO: Make it so that the cardpool is locked while recycling and refreshing the player's store cards
         const currentStoreCards = player.store.availablePokemon;
         const newStoreCards = _.sampleSize(this.room.cardPool.filter(c => c.tier <= player.currentTier), this.getStoreCountForTier(player));
