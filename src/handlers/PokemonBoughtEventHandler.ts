@@ -4,8 +4,9 @@ import { gameRooms } from './../managers/gameRoom.manager';
 import _ from 'lodash';
 import { registerHandler } from './BaseEventHandler';
 import logger from './../logging/logger';
+import { IPlayer } from './../models/gameroom';
 
-export default (socket: socketio.Socket) => registerHandler<PokemonBoughtEventMessage, any>(socket, 'pokemonBought', (data: PokemonBoughtEventMessage, success, failure) => {
+export default (socket: socketio.Socket) => registerHandler<PokemonBoughtEventMessage, IPlayer>(socket, 'pokemonBought', (data: PokemonBoughtEventMessage, success, failure) => {
     logger.debug(`Starting [PokemonBoughtEventHandler] request from player ${data.playerId}`);
 
     const gameRoom = gameRooms.find(gr => gr.room.id === data.gameRoomId);
@@ -46,5 +47,5 @@ export default (socket: socketio.Socket) => registerHandler<PokemonBoughtEventMe
 
     _.remove(player.store.availablePokemon, targetPokemon);
 
-    return success(null); // TODO: Make it so that if there's nothing that needs to be returned we just do 'return success()'
+    return success(player);
 });

@@ -105,6 +105,10 @@ class GameRoom {
                         // Give each player 2 random energy cards after each round
                         this.givePlayerRandomEnergyCard(p);
                         this.givePlayerRandomEnergyCard(p);
+
+                        // Give them a fresh store if they didn't freeze it last round
+                        if (!p.store.frozen)
+                            this.generateStoreForPlayer(p);
                     });
 
                     this.generatePlayerMatchups();
@@ -170,7 +174,7 @@ class GameRoom {
     private generateStoreForPlayer = (player: IPlayer) => {
         // TODO: Make it so that the cardpool is locked while recycling and refreshing the player's store cards
         const currentStoreCards = player.store.availablePokemon;
-        const newStoreCards = _.sampleSize(this.room.cardPool, this.getStoreCountForTier(player));
+        const newStoreCards = _.sampleSize(this.room.cardPool.filter(c => c.tier <= player.currentTier), this.getStoreCountForTier(player));
         newStoreCards.forEach(c => _.remove(this.room.cardPool, c));
         this.room.cardPool = this.room.cardPool.concat(currentStoreCards);
         player.store.availablePokemon = newStoreCards;
@@ -479,6 +483,7 @@ interface IPlayer {
 
 interface IStoreBoard {
     availablePokemon: ICard[];
+    frozen: boolean;
 }
 
 interface IPlayerBoard {

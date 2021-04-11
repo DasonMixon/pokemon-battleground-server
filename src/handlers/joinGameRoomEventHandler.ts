@@ -33,7 +33,8 @@ export default (socket: socketio.Socket) => registerHandler<JoinGameRoomEventMes
             cards: new Array()
         },
         store: {
-            availablePokemon: new Array()
+            availablePokemon: new Array(),
+            frozen: false
         },
         socketId: socket.id,
         maxHealth: 40,
@@ -41,7 +42,7 @@ export default (socket: socketio.Socket) => registerHandler<JoinGameRoomEventMes
         knockedOut: false,
         roundKnockedOut: 0,
         currentTier: 1,
-        tierUpCost: 5 // 7, 8, 9, 11
+        tierUpCost: 5
     };
     gameRoom.room.players.push(player);
     socketGameRoomAssociations.push({ gameRoomId: gameRoom.room.id, socketId: socket.id });
