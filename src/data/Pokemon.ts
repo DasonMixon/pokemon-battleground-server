@@ -5,7 +5,6 @@ const lightningPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Voltorb',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Electro Ball',
@@ -25,7 +24,6 @@ const lightningPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Electrode',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Electric Ball',
@@ -49,7 +47,6 @@ const grassPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Yanma',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'U-turn',
@@ -68,7 +65,6 @@ const grassPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Yanmega',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'U-turn',
@@ -102,7 +98,6 @@ const fightingPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Clobbopus',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Beat',
@@ -130,7 +125,6 @@ const fightingPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Riolu',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Best Punch',
@@ -152,7 +146,6 @@ const metalPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Galarian Meowth',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Scratch',
@@ -180,7 +173,6 @@ const metalPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Galarian Perrserker',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Stealy Claws',
@@ -212,7 +204,6 @@ const psychicPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Cottonee',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Rolling Tackle',
@@ -231,7 +222,6 @@ const psychicPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Xerneas',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Geo Hunt',
@@ -263,7 +253,6 @@ const waterPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Chewtle',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Jaw Lock',
@@ -283,7 +272,6 @@ const waterPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Drednaw',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Vise Wave',
@@ -318,7 +306,6 @@ const darknessPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Sableye',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Filch',
@@ -346,7 +333,6 @@ const darknessPokemon: ICard[] = [
     {
         imageId: '',
         name: 'Poochyena',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Bite',
@@ -377,7 +363,6 @@ const firePokemon: ICard[] = [
     {
         imageId: '',
         name: 'Charmander',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Collect',
@@ -405,7 +390,6 @@ const firePokemon: ICard[] = [
     {
         imageId: '',
         name: 'Charmeleon',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Slash',
@@ -433,7 +417,6 @@ const firePokemon: ICard[] = [
     {
         imageId: '',
         name: 'Charizard',
-        attachedEnergy: [],
         attacks: [
             {
                 name: 'Roywal Blaze',

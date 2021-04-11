@@ -4,7 +4,6 @@ import { CardType, EnergyType } from './Enums';
 const grassEnergy: ICard = {
     imageId: 'TODO: Implement a system to provide image assets + their ids to clients',
     name: 'Grass Energy',
-    attachedEnergy: [],
     attacks: [],
     energyType: EnergyType.Grass,
     maxHealth: null,
@@ -15,7 +14,6 @@ const grassEnergy: ICard = {
 const fireEnergy: ICard = {
     imageId: 'TODO: Implement a system to provide image assets + their ids to clients',
     name: 'Fire Energy',
-    attachedEnergy: [],
     attacks: [],
     energyType: EnergyType.Fire,
     maxHealth: null,
@@ -26,7 +24,6 @@ const fireEnergy: ICard = {
 const waterEnergy: ICard = {
     imageId: 'TODO: Implement a system to provide image assets + their ids to clients',
     name: 'Water Energy',
-    attachedEnergy: [],
     attacks: [],
     energyType: EnergyType.Water,
     maxHealth: null,
@@ -37,7 +34,6 @@ const waterEnergy: ICard = {
 const lightningEnergy: ICard = {
     imageId: 'TODO: Implement a system to provide image assets + their ids to clients',
     name: 'Lightning Energy',
-    attachedEnergy: [],
     attacks: [],
     energyType: EnergyType.Lightning,
     maxHealth: null,
@@ -48,7 +44,6 @@ const lightningEnergy: ICard = {
 const psychicEnergy: ICard = {
     imageId: 'TODO: Implement a system to provide image assets + their ids to clients',
     name: 'Psychic Energy',
-    attachedEnergy: [],
     attacks: [],
     energyType: EnergyType.Psychic,
     maxHealth: null,
@@ -59,7 +54,6 @@ const psychicEnergy: ICard = {
 const fightingEnergy: ICard = {
     imageId: 'TODO: Implement a system to provide image assets + their ids to clients',
     name: 'Fighting Energy',
-    attachedEnergy: [],
     attacks: [],
     energyType: EnergyType.Fighting,
     maxHealth: null,
@@ -70,7 +64,6 @@ const fightingEnergy: ICard = {
 const darknessEnergy: ICard = {
     imageId: 'TODO: Implement a system to provide image assets + their ids to clients',
     name: 'Darkness Energy',
-    attachedEnergy: [],
     attacks: [],
     energyType: EnergyType.Darkness,
     maxHealth: null,
@@ -81,7 +74,6 @@ const darknessEnergy: ICard = {
 const metalEnergy: ICard = {
     imageId: 'TODO: Implement a system to provide image assets + their ids to clients',
     name: 'Metal Energy',
-    attachedEnergy: [],
     attacks: [],
     energyType: EnergyType.Metal,
     maxHealth: null,

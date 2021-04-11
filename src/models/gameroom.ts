@@ -356,7 +356,7 @@ class GameRoom {
             // See whether the attacking pokemon has correct energy for one of their attacks. If not they get "skipped", else
             // they use whatever the "highest" attack they have that matches their current energies
             const availableAttacks = attackingPokemon.pokemon.attacks.filter(at => {
-                const attachedEnergyTypes = attackingPokemon.pokemon.attachedEnergy.map(ae => ae.energyType);
+                const attachedEnergyTypes = attackingPokemon.attachedEnergy.map(ae => ae.energyType);
                 at.energyCost.forEach(ec => {
                     const fromAttachedEnergies = attachedEnergyTypes.find(a => a === ec);
                     if (fromAttachedEnergies === undefined)
@@ -495,6 +495,7 @@ interface IActivePokemon {
     position: number;
     currentHealth: number;
     hasAttacked: boolean;
+    attachedEnergy: ICard[];
 }
 
 interface IAttack {
@@ -513,7 +514,6 @@ interface ICard {
     name: string;
     type: CardType;
     energyType: EnergyType;
-    attachedEnergy: ICard[];
     maxHealth: number;
     attacks: IAttack[];
     tier: number | null;
