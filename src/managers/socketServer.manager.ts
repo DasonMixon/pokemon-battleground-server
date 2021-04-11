@@ -3,6 +3,7 @@ import joinGameRoomEventHandler from './../handlers/joinGameRoomEventHandler';
 import pokemonBoughtEventHandler from './../handlers/pokemonBoughtEventHandler';
 import { gameRooms, socketGameRoomAssociations } from './gameRoom.manager';
 import _ from'lodash';
+import logger from './../logging/logger';
 
 const server = new socketio.Server();
 
@@ -23,7 +24,7 @@ const server = new socketio.Server();
         attachenergy
 */
 server.on('connection', socket => {
-    console.log(`Connection from socket '${socket.id}'`);
+    logger.info(`Connection from socket '${socket.id}'`);
 
     socket.on('disconnect', () => {
         const socketGameRoom = socketGameRoomAssociations.find(gra => gra.socketId === socket.id);
@@ -33,7 +34,7 @@ server.on('connection', socket => {
             _.remove(gameRoom.room.players, p => p.socketId === socket.id);
         }
 
-        console.log(`Socket '${socket.id}' disconnected`);
+        logger.info(`Socket '${socket.id}' disconnected`);
     });
 
     joinGameRoomEventHandler(socket);
@@ -42,7 +43,7 @@ server.on('connection', socket => {
 
 const start = (port: number) => {
     server.listen(port);
-    console.log(`WS server started on port ${port}`);
+    logger.info(`WS server started on port ${port}`);
 }
 
 export { start, server }

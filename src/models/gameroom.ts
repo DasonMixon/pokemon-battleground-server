@@ -143,7 +143,8 @@ class GameRoom {
     }
 
     private givePlayerRandomEnergyCard = (player: IPlayer) => {
-        const randomEnergyCard = availableEnergy.find(e => e.energyType === _.sample(this.energyTypes));
+        const randomType = _.sample(this.energyTypes);
+        const randomEnergyCard = availableEnergy.find(e => e.energyType === randomType);
         player.hand.cards.push(randomEnergyCard);
     }
 
